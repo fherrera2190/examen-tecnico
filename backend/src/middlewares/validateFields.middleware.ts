@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { ZodError, ZodTypeAny } from "zod";
-import { CustomError } from "../interfaces";
+import { CustomError } from "../utils/custom.error";
 
 export const validateFields =
   (schema: ZodTypeAny): RequestHandler =>
@@ -14,13 +14,12 @@ export const validateFields =
     } catch (error) {
       if (error instanceof ZodError) {
         // console.log(error);
-        const customError: CustomError = new Error(
+        const customError = CustomError.badRequest(
           "Validation Error: " +
             error.errors
               .map((e) => `${e.path.join(".")}: ${e.message}`)
               .join(", ")
         );
-        customError.statusCode = 400;
         return next(customError);
       }
       next(error);

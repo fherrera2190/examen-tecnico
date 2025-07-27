@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CustomError } from "../interfaces";
-import { Prisma } from "@prisma/client";
+import { CustomError } from "../utils/custom.error";
 
 export const errorHandler = (
   err: CustomError,
@@ -8,14 +7,15 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
-  //console.error(err);
-  //console.error(`Error ${statusCode}: ${message}`);
+  if (err instanceof CustomError) {
+    return res.status(err.statusCode).json({
+      status: err.statusCode,
+      message: err.message,
+    });
+  }
 
-  res.status(statusCode).json({
-    error: {
-      message: message,
-    },
+  //console.error("Error:", err);
+  return res.status(500).json({
+    error: "Internal Server Error",
   });
 };
