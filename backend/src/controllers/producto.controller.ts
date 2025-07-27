@@ -1,14 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../config";
+import { CustomError } from "../utils/custom.error";
 
 export const getAllProducts = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const productos = await prisma.producto.findMany();
+  try {
+    const productos = await prisma.producto.findMany();
 
-  res.status(200).json(productos);
+    res.status(200).json(productos);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const createProduct = async (
@@ -16,30 +21,25 @@ export const createProduct = async (
   res: Response,
   next: NextFunction
 ) => {
-  const nuevoProducto = await prisma.producto.create({
-    data: req.body,
-  });
+  try {
+    const existingProduct = await prisma.producto.findUnique({
+      where: { nombre: req.body.nombre },
+    });
 
-  res.status(201).json(nuevoProducto);
-};
+    if (existingProduct) {
+      throw CustomError.badRequest(
+        `Producto con nombre ${req.body.nombre} ya existe`
+      );
+    }
 
-export const getProductById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { id } = req.params;
-  const producto = await prisma.producto.findUnique({
-    where: { id: Number(id) },
-  });
+    const nuevoProducto = await prisma.producto.create({
+      data: req.body,
+    });
 
-  if (!producto) {
-    const error = new Error(`Producto con ID ${id} no encontrado`);
-    (error as any).statusCode = 404;
-    return next(error);
+    res.status(201).json(nuevoProducto);
+  } catch (error) {
+    next(error);
   }
-
-  res.status(200).json(producto);
 };
 
 export const updateProduct = async (
@@ -48,13 +48,23 @@ export const updateProduct = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
-  console.log(req.body);
 
-  const updatedProducto = await prisma.producto.update({
+  const existingProduct = await prisma.producto.findUnique({
+    where: { id: Number(id) },
+  });
+
+  if (!existingProduct) {
+    throw CustomError.notFound(`Producto con ID ${id} no encontrado`);
+  }
+
+  await prisma.producto.update({
     where: { id: Number(id) },
     data: req.body,
   });
-  res.json("product updated");
+
+  res.status(200).json({
+    message: "Producto actualizado",
+  });
 };
 
 export const deleteProduct = async (
@@ -62,7 +72,19 @@ export const deleteProduct = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.params;
-  await prisma.producto.delete({ where: { id: Number(id) } });
-  res.json({ message: "product deleted" });
+  try {
+    const { id } = req.params;
+
+    const existingProduct = await prisma.producto.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!existingProduct) {
+      throw CustomError.notFound(`Producto con ID ${id} no encontrado`);
+    }
+    await prisma.producto.delete({ where: { id: Number(id) } });
+    res.status(200).json({ message: "Producto borrado" });
+  } catch (error) {
+    next(error);
+  }
 };
