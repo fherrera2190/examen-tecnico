@@ -17,7 +17,7 @@ router.get("/", getAllProducts);
 
 router.post("/", validateFields(createProductSchema), createProduct);
 
-router.put("/:id", validateFields(updateProductSchema), updateProduct);
+router.patch("/:id", validateFields(updateProductSchema), updateProduct);
 
 router.delete("/:id", deleteProduct);
 

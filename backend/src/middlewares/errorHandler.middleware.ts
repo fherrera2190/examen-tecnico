@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { CustomError } from "../interfaces";
+import { Prisma } from "@prisma/client";
 
-export const errorMiddleware = (
+export const errorHandler = (
   err: CustomError,
   req: Request,
   res: Response,
@@ -9,8 +10,8 @@ export const errorMiddleware = (
 ) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
-
-  console.error(`Error ${statusCode}: ${message}`);
+  //console.error(err);
+  //console.error(`Error ${statusCode}: ${message}`);
 
   res.status(statusCode).json({
     error: {

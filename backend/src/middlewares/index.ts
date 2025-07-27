@@ -1,2 +1,2 @@
-export * from './error.middleware';
-export * from './not-found.middleware';
+export * from './errorHandler.middleware';
+export * from './notFound.middleware';
