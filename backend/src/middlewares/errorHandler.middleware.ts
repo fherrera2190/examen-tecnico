@@ -1,21 +1,15 @@
-import { NextFunction, Request, Response } from "express";
+import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import { CustomError } from "../utils/custom.error";
 
-export const errorHandler = (
+export const errorHandler: ErrorRequestHandler = (
   err: CustomError,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  if (err instanceof CustomError) {
-    return res.status(err.statusCode).json({
-      status: err.statusCode,
-      message: err.message,
-    });
-  }
-
   //console.error("Error:", err);
-  return res.status(500).json({
-    error: "Internal Server Error",
+  res.status(err.statusCode || 500).json({
+    status: err.statusCode || 500,
+    message: err.message || "Internal Server Error",
   });
 };

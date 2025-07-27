@@ -1,7 +1,40 @@
+# Examen Técnico Backend
 
-## Correr en dev
+Bienvenido al proyecto de backend para el examen técnico. Aquí encontrarás todo lo necesario para ponerlo en marcha y comenzar a desarrollar.
 
-1. Clonar el repositorio ```git clone ```
-2. Crear una copia del ```.env.template``` , renombrarlo a ```.env``` y cambiar las variables de entorno.
-3. Instalar dependencias ```npm install```
-4. Correr el proyecto ```npm run dev`
+## Requisitos
+
+- Node.js >= 18
+- Docker (opcional, para base de datos)
+- PostgreSQL
+
+## Instalación y ejecución en desarrollo
+
+1. **Clona el repositorio**
+   ```sh
+   git clone <url-del-repositorio>
+   ```
+
+2. **Configura las variables de entorno**
+   - Copia el archivo `.env.template` y renómbralo a `.env`.
+   - Modifica las variables según tu entorno local.
+
+3. **Instala las dependencias**
+   ```sh
+   npm install
+   ```
+
+4. **Levanta la base de datos**
+   ```sh
+   docker-compose up -d
+   ```
+5. **Aplica migraciones y genera el cliente Prisma**
+
+   ```sh
+   npx prisma migrate dev
+   ```
+
+6. **Ejecuta el proyecto en modo desarrollo**
+   ```sh
+   npm run dev
+   ```
