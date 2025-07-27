@@ -22,6 +22,7 @@ export const createProductSchema = z.object({
     .min(0, "no puede ser negativa"),
 });
 
+
 export const updateProductSchema = z
   .object({
     nombre: z.string().min(1, "debe tener al menos 1 caracter").optional(),
