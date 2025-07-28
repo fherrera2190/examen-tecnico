@@ -22,7 +22,7 @@
 						},
 						{
 							"key": "descripcion",
-							"value": "Descripción del Producto 1",
+							"value": "Descripción del Producto 1 muy larga",
 							"type": "text"
 						},
 						{
@@ -115,7 +115,7 @@
 						},
 						{
 							"key": "descripcion",
-							"value": "Nueva Descripción",
+							"value": "Nueva Descripción del producto muy larga",
 							"type": "text"
 						},
 						{
