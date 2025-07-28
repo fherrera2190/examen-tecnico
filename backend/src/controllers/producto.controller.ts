@@ -47,24 +47,28 @@ export const updateProduct = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const existingProduct = await prisma.producto.findUnique({
-    where: { id: Number(id) },
-  });
+    const existingProduct = await prisma.producto.findUnique({
+      where: { id: Number(id) },
+    });
 
-  if (!existingProduct) {
-    throw CustomError.notFound(`Producto con ID ${id} no encontrado`);
+    if (!existingProduct) {
+      throw CustomError.notFound(`Producto con ID ${id} no encontrado`);
+    }
+
+    await prisma.producto.update({
+      where: { id: Number(id) },
+      data: req.body,
+    });
+
+    res.status(200).json({
+      message: "Producto actualizado",
+    });
+  } catch (error) {
+    next(CustomError.internalError());
   }
-
-  await prisma.producto.update({
-    where: { id: Number(id) },
-    data: req.body,
-  });
-
-  res.status(200).json({
-    message: "Producto actualizado",
-  });
 };
 
 export const deleteProduct = async (
