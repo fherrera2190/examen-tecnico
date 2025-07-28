@@ -9,7 +9,7 @@ import {
 import {
   createProductSchema,
   updateProductSchema,
-} from "../schema/producto.schema";
+} from "../validations/schema/producto.schema";
 import { validateFields } from "../middlewares/validateFields.middleware";
 const router = Router();
 
